@@ -23,7 +23,12 @@ then
 fi
 
 # define default audio format
-aformat=mp3
+# lame workaround but it works :-)
+aformat=$4
+if [ -z $aformat ]
+then
+	aformat=mp3
+fi
 
 function help {
     echo -e "\nUsage: $(basename $0) [-u] <URL> -l <URL-list> [-b] <songs.txt> [-y] <ytlinks.txt>\n"
@@ -61,6 +66,19 @@ EOF
 				https://www.youtube.com/watch?v=descriptor_n
 
 EOF
+	echo -e "\t-a audio format"
+		cat << EOF
+		available options: 
+			best
+			aac
+			vorbis
+			mp3  <-- default
+			m4a
+			opus
+			wav
+
+EOF
+
     exit 1
 }
 
@@ -91,6 +109,7 @@ exit
 
 function downloadYTLink {	# option -y
 	checkdefaults
+	echo FORMAT $aformat
 	youtube-dl -xc --audio-format $aformat --audio-quality 0 -o "%(title)s.%(ext)s" -a $OPTARG
 }
 
@@ -122,6 +141,9 @@ while getopts :u:l:b:y:a:h OPT; do
  		# file containing the list of songs to be searched for and downloaded
 		downloadTxtList
       	;;
+	a)  # format
+	        aformat=$3
+        ;;
 	h)
 		help
 		;;
