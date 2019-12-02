@@ -1,17 +1,19 @@
 # yt2audio
 
-yt2audio is a little Bash wrapper around youtube-dl which helps you to grab audio track from YouTube videos and convert them to MP3.
+yt2audio is a little Bash wrapper around youtube-dl which helps you to grab audio track from YouTube videos and convert them to a give list of popular formats (default=MP3).<p>
+Files will be downloaded to the current working directory. If you plan to download a playlist, I suggest you to create a directory for it first...<p>
 
 ## usage
-Usage: yt2audio.sh [-u] <URL> [-l] <URL-list> [-b] <songs.txt> [-y] <ytlinks.txt>
+       yt2audio.sh [-s] <URL> -p <URL-list> [-d] <songs.txt> [-l] <file.txt> -a <audio-format>
 
-        -u URL          download a single song from YouTube
+        -s URL          download a single song
+                        https://www.youtube.com/watch?v=XXXXXXXXX
 
-        -l URL-list     download a play list
-                        https://www.youtube.com/watch?v=XXXXXXXXXX&list=YYYYYYYYYYYYYYYYYYY
+        -p URL-list     download a play list
+                        "https://www.youtube.com/watch?v=XXXXXXXXXX&list=YYYYYYYYYYYYYYYYYYY" <-- between double quotes!
                         https://foo.bandcamp.com/album/bar
 
-        -b songs        download songs as described in songs.txt
+        -d songs        download songs as described in songs.txt
     
                          songs.txt must be in the following format:
 
@@ -24,9 +26,9 @@ Usage: yt2audio.sh [-u] <URL> [-l] <URL-list> [-b] <songs.txt> [-y] <ytlinks.txt
                                 genocide organ - ave satani
                                 haus arafna - new skin grafting
 
-        -y file         download YouTube links listed in file.txt
+        -l file         download YouTube links listed in file.txt
     
-                         ytlinks.txt must be in the following format:
+                         file.txt must be in the following format:
                          
                                 https://www.youtube.com/watch?v=descriptor_1
                                 https://www.youtube.com/watch?v=descriptor_2
@@ -34,6 +36,15 @@ Usage: yt2audio.sh [-u] <URL> [-l] <URL-list> [-b] <songs.txt> [-y] <ytlinks.txt
                                 [...]
                                 https://www.youtube.com/watch?v=descriptor_n
 
+        -a audio format
+                available options: 
+                        best
+                        aac
+                        vorbis
+                        mp3  <-- default
+                        m4a
+                        opus
+                        wav
 
 
 Wherever you see "YouTube" you may use other providers. Please run youtube-dl --list-extractors to see the list of supported platforms.

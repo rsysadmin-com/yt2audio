@@ -3,10 +3,14 @@
 # yt2audio.sh v0.0002
 # 20160909 - martin@mielke.com
 # 
+# latest version on: https://github.com/rsysadmin-com/yt2audio
+#
 # this little script will search YouTube for the songs in the given URL or
 # listed in # a text file, download and convert to mp3 (default) or 
-# other audio formats.
+# other audio formats in your current working directory.
 # 
+# requires: youtube-dl and ffmpeg
+#
 # due to the nature of the underlying tool (youtube-dl) it can also be used
 # with other audio platforms, such as BandCamp (youtube-dl --list-extractors for more info)
 #
@@ -15,12 +19,22 @@
 # This wrapper script has been created in order to facilitate some common actions.
 # 
 
+# print a banner
+#
+echo -e "\n$(basename $0) - by Martin Mielke <martin@mielke.com>"
+echo -e "=================================================="
+
 # First, test if requirements are met
-if [ -z $(which youtube-dl) ]
-then
-    echo -e "\nERROR - please install youtube-dl and try again\n"
-    exit 1
-fi
+requirements="youtube-dl ffmpeg"
+for r in $requirements
+do
+	which $r > /dev/null
+	if [ -$? -ne 0 ]
+	then
+		echo -e "\nERROR - $r not found. Please install it and try again...\n"
+		exit 1
+	fi 
+done
 
 # define default audio format
 # lame workaround but it works :-)
@@ -31,15 +45,19 @@ then
 fi
 
 function help {
-    echo -e "\nUsage: $(basename $0) [-u] <URL> -l <URL-list> [-b] <songs.txt> [-y] <ytlinks.txt>\n"
-    echo -e "\t-u URL \t\tdownload a single song from YouTube\n"
-	echo -e "\t-l URL-list \tdownload a play list"
+    echo -e "\nUsage: $(basename $0) [-s] <URL> -p <URL-list> [-d] <songs.txt> [-l] <file.txt> -a <audio-format>\n"
+    echo -e "\t-s URL \t\tdownload a single song"
 	cat << EOF
-			https://www.youtube.com/watch?v=XXXXXXXXXX&list=YYYYYYYYYYYYYYYYYYY
+			https://www.youtube.com/watch?v=XXXXXXXXX
+
+EOF
+	echo -e "\t-p URL-list \tdownload a play list"
+	cat << EOF
+			"https://www.youtube.com/watch?v=XXXXXXXXXX&list=YYYYYYYYYYYYYYYYYYY" (use quotes!)
 			https://foo.bandcamp.com/album/bar
 			
 EOF
-    echo -e "\t-b songs \tdownload songs as described in songs.txt"
+    echo -e "\t-d songs \tdownload songs as described in songs.txt"
     cat << EOF
     
 			 songs.txt must be in the following format:
@@ -54,10 +72,10 @@ EOF
 				haus arafna - new skin grafting
 
 EOF
-    echo -e "\t-y file \tdownload YouTube links listed in file.txt"
+    echo -e "\t-l file \tdownload YouTube links listed in file.txt"
        cat << EOF
     
-			 ytlinks.txt must be in the following format:
+			 file.txt must be in the following format:
 			 
 				https://www.youtube.com/watch?v=descriptor_1
 				https://www.youtube.com/watch?v=descriptor_2
@@ -96,7 +114,7 @@ function checkdefaults {
 	fi
 }
 
-function downloadTxtList {	# option -b
+function downloadSongsList {	# option -l
 	checkdefaults
 	cat $OPTARG |
 	while read artist song
@@ -107,42 +125,41 @@ exit
 
 }
 
-function downloadYTLink {	# option -y
+function downloadAllLinks {	# option -l
 	checkdefaults
-	echo FORMAT $aformat
 	youtube-dl -xc --audio-format $aformat --audio-quality 0 -o "%(title)s.%(ext)s" -a $OPTARG
 }
 
-function downloadYTList {  # option -l
+function downloadPlayList {  # option -p
 	checkdefaults
 	youtube-dl -xc --audio-format $aformat --download-archive downloaded-list-items.txt --audio-quality 0 -o "%(title)s.%(ext)s"  $OPTARG 
 }
 
-function downloadSingleLink {  # option -u
+function downloadSingleSong {  # option -s
 	checkdefaults
 	youtube-dl -xc --audio-format $aformat --audio-quality 0 -o "%(title)s.%(ext)s" $OPTARG
 }
 
-# to-do: verify missing downloads from the list
-# to-do: point out wrongly downloaded songs
-
-while getopts :u:l:b:y:a:h OPT; do
+#
+# main()
+#
+while getopts s:p:d:l:a:h OPT; do
   case $OPT in
-    u)  # set option "u" (unique song)
-		downloadSingleLink
+    s)  # set option "u" (single song)
+		downloadSingleSong
       	;;
-	l)	# set uption "l" (all songs in a YT list)
-		downloadYTList
+	p)	# set uption "p" (all songs in a YT list)
+		downloadPlayList
 		;;
-	y)	# set option "y" (batch mode for YouTube links in a file)
-		downloadYTLink
+	l)	# set option "l" (batch mode for YouTube links in a file)
+		downloadAllLinks
 		;;
-    b)  # set option "b" (batch mode for artist - song in a file)
+    d)  # set option "d" (batch mode for artist - song in a file)
  		# file containing the list of songs to be searched for and downloaded
-		downloadTxtList
+		downloadSongsList
       	;;
 	a)  # format
-	        aformat=$3
+	    aformat=$4
         ;;
 	h)
 		help
