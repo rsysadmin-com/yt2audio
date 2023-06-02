@@ -1,6 +1,6 @@
 # yt2audio
 
-yt2audio is a little Bash wrapper around youtube-dl which helps you to grab audio tracks from YouTube videos and convert them to a given list of popular formats (default=MP3).<p>
+yt2audio is a little Bash wrapper around ~~youtube-dl~~ which helps you to grab audio tracks from YouTube videos and convert them to a given list of popular formats (default=MP3).<p>
 Files will be downloaded to the current working directory. If you plan to download a playlist, I suggest you to create a directory for it first...<p>
 
 ## usage
@@ -47,13 +47,13 @@ Files will be downloaded to the current working directory. If you plan to downlo
                         wav
 
 
-Wherever you see "YouTube" you may use other providers. Please run youtube-dl --list-extractors to see the list of supported platforms.
+Wherever you see "YouTube" you may use other providers. Please run ~~youtube-dl~~ yt-dpl --list-extractors to see the list of supported platforms.
 
 ## disturbances in The Force
 sometimes you may list an artist or a song and you could get something totally unrelated if what you are looking for is not available. I would suggest you to try searching on, say, YouTube first to check whether the tune exists... if not, just enjoy the new (unknown?) songs :-)
 
 ## requierements
-yt2audio needs youtube-dl to handle all the downloads and ffmpeg for audio format conversions so they need to be installed on your system.<p>
+yt2audio needs ~~youtube-dl~~ yt-dlp to handle all the downloads and ffmpeg for audio format conversions so they need to be installed on your system.<p>
 You can install both using your system's software management tool (i.e.: zypper, yum, apt, dnf...)<p>
 
 ## disclaimer
