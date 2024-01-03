@@ -1,7 +1,22 @@
 #!/bin/bash
 
+# yt2audio.sh v0.0007
+# 20230602 - martinm@rsysadmin.com
+# 
+# latest version on: https://github.com/rsysadmin-com/yt2audio
+#
+# this little script will search YouTube for the songs in the given URL or
+# listed in # a text file, download and convert to mp3 (default) or 
+# other audio formats in your current working directory.
+# 
+# requires: yt-dlp and ffmpeg
+#
+# due to the nature of the underlying tool (yt-dlp) it can also be used
+# with other audio platforms, such as BandCamp (yt-dlp --list-extractors for more info)
+#
+#
 # yt2audio.sh v0.0002
-# 20160909 - martin@mielke.com
+# 20160909 - martinm@rsysadmin.com
 # 
 # latest version on: https://github.com/rsysadmin-com/yt2audio
 #
@@ -14,18 +29,23 @@
 # due to the nature of the underlying tool (youtube-dl) it can also be used
 # with other audio platforms, such as BandCamp (youtube-dl --list-extractors for more info)
 #
+
+# ====================================================================================
 # DISCLAIMER: this tool is provided on an "AS IS" basis.
 # The author is not to be held responsible for the use or misuse thereof.
 # This wrapper script has been created in order to facilitate some common actions.
-# 
+# ====================================================================================
 
 # print a banner
 #
-echo -e "\n$(basename $0) - by Martin Mielke <martin@mielke.com>"
+echo -e "\n$(basename $0) - by Martin Mielke <martinm@rsysadmin.com>"
 echo -e "=================================================="
 
+# Set which downloader to use
+ytbinary="yt-dlp"
+
 # First, test if requirements are met
-requirements="youtube-dl ffmpeg"
+requirements="$ytbinary ffmpeg"
 for r in $requirements
 do
 	which $r > /dev/null
@@ -119,7 +139,7 @@ function downloadSongsList {	# option -l
 	cat $OPTARG |
 	while read artist song
 	do
-		youtube-dl "ytsearch:$artist $song" -xc --audio-format $aformat --audio-quality 0 -o "%(title)s.%(ext)s"
+		$ytbinary "ytsearch:$artist $song" -xc --audio-format $aformat -f bestaudio -o "%(title)s.%(ext)s"
 	done
 exit 
 
@@ -127,17 +147,17 @@ exit
 
 function downloadAllLinks {	# option -l
 	checkdefaults
-	youtube-dl -xc --audio-format $aformat --audio-quality 0 -o "%(title)s.%(ext)s" -a $OPTARG
+	$ytbinary -xc --audio-format $aformat -f bestaudio -o "%(title)s.%(ext)s" -a $OPTARG
 }
 
 function downloadPlayList {  # option -p
 	checkdefaults
-	youtube-dl -xc --audio-format $aformat --download-archive downloaded-list-items.txt --audio-quality 0 -o "%(title)s.%(ext)s"  $OPTARG 
+	$ytbinary -xc --audio-format $aformat --download-archive downloaded-list-items.txt -f bestaudio -o "%(title)s.%(ext)s"  $OPTARG 
 }
 
 function downloadSingleSong {  # option -s
 	checkdefaults
-	youtube-dl -xc --audio-format $aformat --audio-quality 0 -o "%(title)s.%(ext)s" $OPTARG
+	$ytbinary -xc --audio-format $aformat -f bestaudio -o "%(title)s.%(ext)s" $OPTARG
 }
 
 #
@@ -145,10 +165,10 @@ function downloadSingleSong {  # option -s
 #
 while getopts s:p:d:l:a:h OPT; do
   case $OPT in
-    s)  # set option "u" (single song)
+    s)  # set option "s" (single song)
 		downloadSingleSong
       	;;
-	p)	# set uption "p" (all songs in a YT list)
+	p)	# set uption "p" (all songs in a YT playlist)
 		downloadPlayList
 		;;
 	l)	# set option "l" (batch mode for YouTube links in a file)
