@@ -1,7 +1,8 @@
 # yt2audio
 
-yt2audio is a little Bash wrapper around ~~youtube-dl~~ which helps you to grab audio tracks from YouTube videos and convert them to a given list of popular formats (default=MP3).<p>
-Files will be downloaded to the current working directory. If you plan to download a playlist, I suggest you to create a directory for it first...<p>
+yt2audio is a little Bash wrapper around ~~youtube-dl~~ yt-dlp which helps you to grab audio tracks from YouTube videos, and other providers, and convert them to a given list of popular formats (default=MP3).
+
+Files will be downloaded to the current working directory. If you plan to download a playlist, I suggest you to create a directory for it first...
 
 ## usage
        yt2audio.sh [-s] <URL> -p <URL-list> [-d] <songs.txt> [-l] <file.txt> -a <audio-format>
