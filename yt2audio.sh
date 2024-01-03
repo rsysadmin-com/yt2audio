@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # yt2audio.sh v0.0007
-# 20230602 - martin@mielke.com
+# 20230602 - martinm@rsysadmin.com
 # 
 # latest version on: https://github.com/rsysadmin-com/yt2audio
 #
@@ -16,7 +16,7 @@
 #
 #
 # yt2audio.sh v0.0002
-# 20160909 - martin@mielke.com
+# 20160909 - martinm@rsysadmin.com
 # 
 # latest version on: https://github.com/rsysadmin-com/yt2audio
 #
@@ -38,7 +38,7 @@
 
 # print a banner
 #
-echo -e "\n$(basename $0) - by Martin Mielke <martin@mielke.com>"
+echo -e "\n$(basename $0) - by Martin Mielke <martinm@rsysadmin.com>"
 echo -e "=================================================="
 
 # Set which downloader to use
@@ -168,7 +168,7 @@ while getopts s:p:d:l:a:h OPT; do
     s)  # set option "s" (single song)
 		downloadSingleSong
       	;;
-	p)	# set uption "p" (all songs in a YT list)
+	p)	# set uption "p" (all songs in a YT playlist)
 		downloadPlayList
 		;;
 	l)	# set option "l" (batch mode for YouTube links in a file)
